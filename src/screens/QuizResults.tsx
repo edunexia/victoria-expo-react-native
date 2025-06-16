@@ -104,7 +104,7 @@ const QuizResults: React.FC<Props> = ({ results, questionBlock, onRestart }) => 
                   <View style={[
                     styles.scoreCircle,
                     {
-                      backgroundColor: "#059669"
+                      backgroundColor: "#1a365d"
                     }
                   ]}>
                     <Text style={styles.scoreText}>{answer.value}</Text>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
 
   headerContainer: {
-    backgroundColor: '#059669',
+    backgroundColor: '#319795',
     paddingTop: Platform.OS === 'ios' ? 50 : 75,
     paddingBottom: isSmallScreen ? 24 : 28,
     ...Platform.select({
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
     }),
   },
   restartButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#3182ce',
     borderRadius: 12,
     paddingVertical: isSmallScreen ? 14 : 16,
     paddingHorizontal: 32,

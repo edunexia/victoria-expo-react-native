@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   View, 
   Text, 
@@ -15,6 +15,7 @@ import {
 import { QuizAnswer, QuizResults } from '../types/quiz';
 import { QuestionBlock } from '../types/question';
 import QuestionItem from '../components/QuestionItem';
+import { sampleQuizData } from '../../data';
 
 const { width } = Dimensions.get('window');
 
@@ -22,7 +23,6 @@ const isSmallScreen = width < 375;
 const isMediumScreen = width >= 375 && width < 414;
 
 interface Props {
-  questionBlock: QuestionBlock;
   onSubmit: (results: QuizResults) => void;
   isSubmitting?: boolean;
 }
@@ -32,65 +32,63 @@ interface UserInfo {
   email: string;
 }
 
-const Quiz: React.FC<Props> = ({ questionBlock, onSubmit, isSubmitting = false }) => {
-  const [answers, setAnswers] = useState<{ [questionId: number]: number }>({});
+const Quiz: React.FC<Props> = ({ onSubmit, isSubmitting = false }) => {
+  const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
+  const [answers, setAnswers] = useState<{ [blockId: number]: { [questionId: number]: number } }>({});
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: '', email: '' });
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  const questionBlocks = sampleQuizData;
+  const questionBlock = questionBlocks[currentBlockIndex];
 
   const handleAnswerChange = (questionId: number, value: number) => {
     setAnswers(prev => ({
       ...prev,
-      [questionId]: value
+      [questionBlock.id]: {
+        ...(prev[questionBlock.id] || {}),
+        [questionId]: value
+      }
     }));
   };
 
+  const handleNextBlock = () => {
+    setCurrentBlockIndex((prev) => prev + 1);
+    setTimeout(() => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({ y: 0, animated: true });
+      }
+    }, 100);
+  };
+
   const handleSubmit = () => {
-    const unansweredQuestions = questionBlock.questions.filter(
-      question => answers[question.id] === undefined
-    );
-
-    if (unansweredQuestions.length > 0) {
-      Alert.alert(
-        'Quiz Incomplete',
-        'Please answer all questions before submitting.',
-        [{ text: 'OK', style: 'default' }],
-        { cancelable: false }
-      );
-      return;
-    }
-
-    if (!userInfo.name.trim() || !userInfo.email.trim()) {
-      Alert.alert(
-        'Information Required',
-        'Please enter both your name and email address.',
-        [{ text: 'OK', style: 'default' }],
-        { cancelable: false }
-      );
-      return;
-    }
-
-    const quizAnswers: QuizAnswer[] = Object.entries(answers).map(([questionId, value]) => ({
-      questionId: parseInt(questionId),
-      value
-    }));
+    let allAnswers: QuizAnswer[] = [];
+    questionBlocks.forEach(block => {
+      const blockAnswers = answers[block.id] || {};
+      Object.entries(blockAnswers).forEach(([questionId, value]) => {
+        allAnswers.push({ questionId: parseInt(questionId), value });
+      });
+    });
 
     const results: QuizResults & { userInfo: UserInfo } = {
-      blockId: questionBlock.id,
-      answers: quizAnswers,
+      blockId: questionBlocks[0].id,
+      answers: allAnswers,
       completedAt: new Date().toISOString(),
       userInfo: {
         name: userInfo.name.trim(),
         email: userInfo.email.trim()
       }
     };
-
     onSubmit(results);
   };
 
-  const answeredCount = Object.keys(answers).length;
+  const blockAnswers = answers[questionBlock.id] || {};
+  const answeredCount = Object.keys(blockAnswers).length;
   const totalQuestions = questionBlock.questions.length;
   const progressPercentage = (answeredCount / totalQuestions) * 100;
   const isComplete = answeredCount === totalQuestions;
-  const canSubmit = isComplete && !isSubmitting;
+  const isLastBlock = currentBlockIndex === questionBlocks.length - 1;
+  const canSubmit = isComplete && !isSubmitting && isLastBlock;
+  const canNext = isComplete && !isLastBlock;
 
   return (
     <View style={styles.container}>
@@ -124,6 +122,7 @@ const Quiz: React.FC<Props> = ({ questionBlock, onSubmit, isSubmitting = false }
       </View>
 
       <ScrollView 
+        ref={scrollViewRef}
         style={styles.scrollContainer}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -143,77 +142,102 @@ const Quiz: React.FC<Props> = ({ questionBlock, onSubmit, isSubmitting = false }
               
               <QuestionItem
                 question={question}
-                selectedValue={answers[question.id] ?? null}
+                selectedValue={blockAnswers[question.id] ?? null}
                 onValueChange={handleAnswerChange}
                 disabled={isSubmitting}
               />
             </View>
           ))}
 
-          <View style={styles.userInfoSection}>
-            <Text style={styles.userInfoTitle}>Please enter your information to see your results</Text>
-            
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Name</Text>
-              <TextInput
-                style={styles.textInput}
-                value={userInfo.name}
-                onChangeText={(text) => setUserInfo(prev => ({ ...prev, name: text }))}
-                placeholder="Enter your name"
-                placeholderTextColor="#a0aec0"
-              />
-            </View>
+          {isLastBlock && (
+            <View style={styles.userInfoSection}>
+              <Text style={styles.userInfoTitle}>Please enter your information to see your results</Text>
+              
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Name</Text>
+                <TextInput
+                  style={styles.textInput}
+                  value={userInfo.name}
+                  onChangeText={(text) => setUserInfo(prev => ({ ...prev, name: text }))}
+                  placeholder="Enter your name"
+                  placeholderTextColor="#a0aec0"
+                />
+              </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Email</Text>
-              <TextInput
-                style={styles.textInput}
-                value={userInfo.email}
-                onChangeText={(text) => setUserInfo(prev => ({ ...prev, email: text }))}
-                placeholder="Enter your email address"
-                placeholderTextColor="#a0aec0"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-              <Text style={styles.emailDisclaimer}>
-                By providing your email address, you'll be signed up to receive periodic emails and financial education from our platform, which you can unsubscribe from at any time.
-              </Text>
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Email</Text>
+                <TextInput
+                  style={styles.textInput}
+                  value={userInfo.email}
+                  onChangeText={(text) => setUserInfo(prev => ({ ...prev, email: text }))}
+                  placeholder="Enter your email address"
+                  placeholderTextColor="#a0aec0"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+                <Text style={styles.emailDisclaimer}>
+                  By providing your email address, you'll be signed up to receive periodic emails and financial education from our platform, which you can unsubscribe from at any time.
+                </Text>
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </ScrollView>
 
       <View style={styles.submitSection}>
         <View style={styles.submitContainer}>
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              canSubmit && userInfo.name.trim() && userInfo.email.trim() ? styles.submitButtonEnabled : styles.submitButtonDisabled
-            ]}
-            onPress={handleSubmit}
-            disabled={!canSubmit || !userInfo.name.trim() || !userInfo.email.trim()}
-            activeOpacity={0.8}
-          >
-            {isSubmitting ? (
-              <View style={styles.submitButtonContent}>
-                <ActivityIndicator size="small" color="#ffffff" />
-                <Text style={styles.submitButtonTextEnabled}>
-                  Submitting...
+          {isLastBlock ? (
+            <TouchableOpacity
+              style={[
+                styles.submitButton,
+                canSubmit && userInfo.name.trim() && userInfo.email.trim() ? styles.submitButtonEnabled : styles.submitButtonDisabled
+              ]}
+              onPress={handleSubmit}
+              disabled={!canSubmit || !userInfo.name.trim() || !userInfo.email.trim()}
+              activeOpacity={0.8}
+            >
+              {isSubmitting ? (
+                <View style={styles.submitButtonContent}>
+                  <ActivityIndicator size="small" color="#ffffff" />
+                  <Text style={styles.submitButtonTextEnabled}>
+                    Submitting...
+                  </Text>
+                </View>
+              ) : (
+                <Text style={[
+                  styles.submitButtonText,
+                  canSubmit && userInfo.name.trim() && userInfo.email.trim() ? styles.submitButtonTextEnabled : styles.submitButtonTextDisabled
+                ]}>
+                  Submit Quiz
                 </Text>
-              </View>
-            ) : (
+              )}
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[
+                styles.submitButton,
+                canNext ? styles.submitButtonEnabled : styles.submitButtonDisabled
+              ]}
+              onPress={handleNextBlock}
+              disabled={!canNext}
+              activeOpacity={0.8}
+            >
               <Text style={[
                 styles.submitButtonText,
-                canSubmit && userInfo.name.trim() && userInfo.email.trim() ? styles.submitButtonTextEnabled : styles.submitButtonTextDisabled
+                canNext ? styles.submitButtonTextEnabled : styles.submitButtonTextDisabled
               ]}>
-                Submit Quiz
+                Next
               </Text>
-            )}
-          </TouchableOpacity>
-          
-          {(!isComplete || !userInfo.name.trim() || !userInfo.email.trim()) && (
+            </TouchableOpacity>
+          )}
+          {(!isComplete && (
             <Text style={styles.submitHint}>
-              {!isComplete ? "Answer all questions and enter your information to enable submission" : "Please enter your name and email to submit"}
+              You can't continue without answering all the questions
+            </Text>
+          ))}
+          {(isLastBlock && (!userInfo.name.trim() || !userInfo.email.trim())) && (
+            <Text style={styles.submitHint}>
+              Please enter your name and e-mail address
             </Text>
           )}
         </View>
