@@ -1,4 +1,4 @@
-import { QuestionBlock } from './types';
+import { QuestionBlock } from "./src/types/question";
 
 export const sampleQuizData: QuestionBlock = {
   id: 6,

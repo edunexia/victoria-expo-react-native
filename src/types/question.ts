@@ -12,14 +12,3 @@ export interface QuestionBlock {
   description: string;
   questions: Question[];
 }
-
-export interface QuizAnswer {
-  questionId: number;
-  value: number;
-}
-
-export interface QuizResults {
-  blockId: number;
-  answers: QuizAnswer[];
-  completedAt: string;
-} 
