@@ -2,45 +2,45 @@ import { QuestionBlock } from "./src/types/question";
 
 export const sampleQuizData: QuestionBlock = {
   id: 6,
-  title: "Money primarily allows me to:",
+  title: "My main focus in life is:",
   imageUrl: null,
-  description: "Rate each of the following statements in terms of their truth for you (0 = not at all like me; 1 = a little like me; 2 = a lot like me; 3 = exactly like me)",
+  description: "Rate each of the following statements according to how you feel about them and enjoy the test :)",
   questions: [
     {
       id: 1,
-      index: 0,
-      text: "Not worry.",
-      answerType: "radio-button-0-3"
+      index: 1,
+      text: "Living in the moment.",
+      answerType: "radio-button-1-4"
     },
     {
       id: 2,
-      index: 1,
+      index: 2,
       text: "Buy things or experiences that bring me joy.",
-      answerType: "radio-button-0-3"
+      answerType: "radio-button-1-4"
     },
     {
       id: 3,
-      index: 2,
+      index: 3,
       text: "Feel secure about my future.",
-      answerType: "radio-button-0-3"
+      answerType: "radio-button-1-4"
     },
     {
       id: 4,
-      index: 3,
+      index: 4,
       text: "Express my values and beliefs.",
-      answerType: "radio-button-0-3"
+      answerType: "radio-button-1-4"
     },
     {
       id: 5,
-      index: 4,
+      index: 5,
       text: "Have power and influence over others.",
-      answerType: "radio-button-0-3"
+      answerType: "radio-button-1-4"
     },
     {
       id: 6,
-      index: 5,
+      index: 6,
       text: "Help family and friends.",
-      answerType: "radio-button-0-3"
+      answerType: "radio-button-1-4"
     }
   ]
 }; 
