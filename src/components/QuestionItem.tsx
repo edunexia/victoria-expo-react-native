@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Question } from '../types';
+import { Question } from '../types/question';
 
 interface Props {
   question: Question;

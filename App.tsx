@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, Alert } from 'react-native';
-import Quiz from './components/Quiz';
-import QuizResults from './components/QuizResults';
 import { sampleQuizData } from './data';
-import { QuizResults as QuizResultsType } from './types';
+import { QuizResults as QuizResultsType } from './src/types/quiz';
+import QuizResults from './src/screens/QuizResults';
+import Quiz from './src/screens/Quiz';
 
 export default function App() {
   const [quizResults, setQuizResults] = useState<QuizResultsType | null>(null);
@@ -63,12 +63,11 @@ export default function App() {
       {quizResults ? (
         <QuizResults
           results={quizResults}
-          questionBlock={sampleQuizData}
+          questionBlock={sampleQuizData[0]}
           onRestart={handleRestart}
         />
       ) : (
         <Quiz
-          questionBlock={sampleQuizData}
           onSubmit={handleQuizSubmit}
           isSubmitting={isSubmitting}
         />
