@@ -1,4 +1,4 @@
-
+//interfaces for quiz objects
 
 export interface QuizAnswer {
   questionId: number;

@@ -1,3 +1,5 @@
+//This class contains the views/styles for the quiz result page
+
 import React, { useState } from 'react';
 import {
   View,

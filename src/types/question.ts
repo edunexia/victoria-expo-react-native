@@ -1,3 +1,5 @@
+//interfaces for question onjects
+
 export interface Question {
   id: number;
   index: number;

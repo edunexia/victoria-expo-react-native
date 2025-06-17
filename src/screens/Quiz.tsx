@@ -1,3 +1,5 @@
+//This class contains the views/styles and general settings for the quiz page
+
 import React, { useState, useRef } from 'react';
 import { 
   View, 
@@ -81,6 +83,7 @@ const Quiz: React.FC<Props> = ({ onSubmit, isSubmitting = false }) => {
     onSubmit(results);
   };
 
+  //condition variables
   const blockAnswers = answers[questionBlock.id] || {};
   const answeredCount = Object.keys(blockAnswers).length;
   const totalQuestions = questionBlock.questions.length;
@@ -246,6 +249,7 @@ const Quiz: React.FC<Props> = ({ onSubmit, isSubmitting = false }) => {
   );
 };
 
+//style definitions start from here
 const styles = StyleSheet.create({
   container: {
     flex: 1,
