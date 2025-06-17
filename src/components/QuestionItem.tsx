@@ -1,3 +1,5 @@
+//The class defines the styles, buttons and options concerning the question items.
+
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Question } from '../types/question';
@@ -68,6 +70,7 @@ const QuestionItem: React.FC<Props> = ({ question, selectedValue, onValueChange,
   );
 };
 
+//styling for question panel
 const styles = StyleSheet.create({
   container: {
     marginBottom: 30,

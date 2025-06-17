@@ -18,7 +18,6 @@ A modern, cross-platform quiz application built with React Native and Expo that 
 
 - Node.js (v14 or later)
 - npm or yarn
-- Expo CLI (`npm install -g @expo/cli`)
 - Expo Go app on your phone (for testing on physical devices)
 
 ### Installation
@@ -26,8 +25,7 @@ A modern, cross-platform quiz application built with React Native and Expo that 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/quiz-app.git
-cd quiz-app
+git clone https://blockforgesolutions/victoria-expo-react-native
 ```
 
 2. Install dependencies:
@@ -58,41 +56,6 @@ npx expo start
 - Scan the QR code from the terminal using the Expo Go app
 - The app will load automatically
 
-## Project Structure
-
-```
-QuizApp/
-├── components/
-│   ├── Quiz.tsx           # Main quiz component
-│   ├── QuestionItem.tsx   # Individual question renderer
-│   ├── QuizResults.tsx    # Results display component
-│   └── index.ts          # Component exports
-├── data.ts               # Sample quiz data
-├── types.ts              # TypeScript type definitions
-├── App.tsx               # Main app component
-└── README.md
-```
-
-## JSON Structure
-
-The app expects quiz data in the following format:
-
-```json
-{
-  "id": 6,
-  "title": "Money primarily allows me to:",
-  "imageUrl": null,
-  "description": "Rate each of the following statements in terms of their truth for you (0 = not at all like me; 1 = a little like me; 2 = a lot like me; 3 = exactly like me)",
-  "questions": [
-    {
-      "id": 1,
-      "index": 0,
-      "text": "Not worry.",
-      "answerType": "radio-button-0-3"
-    }
-  ]
-}
-```
 
 ## Customization
 
@@ -106,18 +69,7 @@ All components use StyleSheet for styling. Modify the styles in each component f
 
 ### API Integration
 
-The app is set up to easily integrate with a backend API. Results are formatted as:
-
-```json
-{
-  "blockId": 6,
-  "answers": [
-    { "questionId": 1, "value": 2 },
-    { "questionId": 2, "value": 1 }
-  ],
-  "completedAt": "2024-01-15T10:30:00.000Z"
-}
-```
+The app stores the test results in JSON format for easy integration to a backend API. 
 
 ## Building for Production
 
@@ -140,14 +92,6 @@ npx expo build:android
 - **TypeScript**: Type safety and better development experience
 - **React Hooks**: Modern React state management
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -155,5 +99,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 If you have any questions or need help, please open an issue on GitHub or contact the development team.
+
+## Authors
+Blockforge Solutions Developer Team
 
 > > > > > > > f9420fb (Entrance)

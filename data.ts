@@ -1,3 +1,5 @@
+//Text content for the questions, all question text can be modified from here.
+
 import { QuestionBlock } from "./src/types/question";
 
 export const sampleQuizData: QuestionBlock[] = [
