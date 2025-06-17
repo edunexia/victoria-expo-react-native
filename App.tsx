@@ -63,12 +63,11 @@ export default function App() {
       {quizResults ? (
         <QuizResults
           results={quizResults}
-          questionBlock={sampleQuizData}
+          questionBlock={sampleQuizData[0]}
           onRestart={handleRestart}
         />
       ) : (
         <Quiz
-          questionBlock={sampleQuizData}
           onSubmit={handleQuizSubmit}
           isSubmitting={isSubmitting}
         />
